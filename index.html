@@ -3,179 +3,218 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AI Animator Studio</title>
+  <title>AI Studio Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Prompt', sans-serif; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen pb-12">
-  <div class="max-w-2xl mx-auto px-4 py-8">
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-16">
+  <div class="max-w-xl mx-auto px-4 py-8">
     
     <!-- Header -->
-    <header class="text-center mb-8">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-medium mb-3">
-        Cloud-Native Studio
-      </div>
-      <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight text-white">AI Animator Studio</h1>
-      <p class="text-slate-400 text-sm mt-1">สร้างวิดีโอแอนิเมชันขยับปากจากภาพนิ่งและเสียงสังเคราะห์</p>
+    <header class="text-center mb-6">
+      <h1 class="text-2xl font-bold tracking-tight text-white">AI Voice & Face Studio</h1>
+      <p class="text-slate-400 text-xs mt-1">ระบบผลิตเสียงพากย์และวิดีโอตัวละครพูดภาษาไทย</p>
     </header>
 
-    <div class="space-y-6">
-      <!-- 1. Connection Setting -->
-      <section class="p-5 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
-        <label class="block text-xs font-medium uppercase tracking-wider text-slate-400 mb-2">
-          1. เชื่อมต่อ Backend (Ngrok URL)
-        </label>
+    <div class="space-y-5">
+      <!-- 1. Connection (ฝัง URL เริ่มต้นไว้ให้แล้ว) -->
+      <section class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Backend URL</label>
+          <span id="statusIndicator" class="text-xs text-slate-500">รอการตรวจสอบ...</span>
+        </div>
         <div class="flex gap-2">
-          <input type="url" id="backendUrl" placeholder="https://xxxx-xx-xx.ngrok-free.app" 
-                 class="flex-1 bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-indigo-500 transition">
-          <button id="btnCheckStatus" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-medium rounded-xl border border-slate-700 transition">
-            ทดสอบ
+          <!-- ใส่ค่า URL ฝังไว้ในโค้ดเลย -->
+          <input type="url" id="backendUrl" value="https://folic-savanna-stunt.ngrok-free.dev" 
+                 class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-indigo-500 transition">
+          <button id="btnCheckStatus" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-medium rounded-lg border border-slate-700 transition">
+            เชื่อมต่อ
           </button>
         </div>
-        <p id="statusIndicator" class="text-xs text-slate-500 mt-2">ยังไม่ได้เชื่อมต่อกับ Kaggle/Colab</p>
       </section>
 
-      <!-- 2. Inputs -->
-      <section class="p-5 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm space-y-5">
-        <h2 class="text-xs font-medium uppercase tracking-wider text-slate-400">
-          2. เตรียมข้อมูลและวัตถุดิบ
-        </h2>
-
-        <!-- Character Image -->
+      <!-- 2. Settings & Mode Selection -->
+      <section class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-4">
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1.5">ภาพตัวละคร (Face Image)</label>
-          <input type="file" id="imageInput" accept="image/*" 
-                 class="block w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-medium file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700 file:cursor-pointer cursor-pointer border border-slate-800 rounded-xl p-1 bg-slate-950">
+          <label class="block text-xs font-semibold text-slate-300 mb-2">เลือกรูปแบบผลลัพธ์</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" id="modeAudioOnly" class="py-2.5 px-3 rounded-lg border border-indigo-600 bg-indigo-600/20 text-indigo-300 text-xs font-medium text-center transition">
+              🔊 เฉพาะเสียงพากย์ (.wav)
+            </button>
+            <button type="button" id="modeVideo" class="py-2.5 px-3 rounded-lg border border-slate-800 bg-slate-950 text-slate-400 text-xs font-medium text-center transition">
+              🎬 วิดีโอภาพขยับ (.mp4)
+            </button>
+          </div>
         </div>
 
-        <!-- Reference Audio -->
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1.5">ไฟล์เสียงต้นแบบสำหรับโคลน (5–15 วินาที)</label>
-          <input type="file" id="audioInput" accept="audio/*" 
-                 class="block w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-medium file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700 file:cursor-pointer cursor-pointer border border-slate-800 rounded-xl p-1 bg-slate-950">
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">เลือกโทนเสียงสังเคราะห์</label>
+          <select id="voiceSelect" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs focus:outline-none focus:border-indigo-500">
+            <option value="th-TH-PremwadeeNeural">เสียงเปรมวดี (ผู้หญิง - สดใส เป็นธรรมชาติ)</option>
+            <option value="th-TH-NiwatNeural">เสียงนิวัฒน์ (ผู้ชาย - ทางการ)</option>
+          </select>
         </div>
 
         <!-- Script Text -->
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1.5">ข้อความสคริปต์ภาษาไทย</label>
-          <textarea id="scriptText" rows="4" placeholder="พิมพ์ข้อความที่ต้องการให้ตัวละครพูดที่นี่..." 
-                    class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-3 text-sm focus:outline-none focus:border-indigo-500 transition resize-none"></textarea>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">ข้อความสคริปต์ภาษาไทย</label>
+          <textarea id="scriptText" rows="3" placeholder="พิมพ์ข้อความที่ต้องการให้ตัวละครพูด..." 
+                    class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-xs focus:outline-none focus:border-indigo-500 resize-none"></textarea>
+        </div>
+
+        <!-- Character Image (ซ่อนอัตโนมัติถ้าเลือกโหมดเฉพาะเสียง) -->
+        <div id="imageInputBox" class="hidden">
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">ภาพตัวละครหน้าตรง</label>
+          <input type="file" id="imageInput" accept="image/*" 
+                 class="block w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-slate-800 file:text-slate-200 file:cursor-pointer border border-slate-800 rounded-lg p-1 bg-slate-950">
         </div>
       </section>
 
       <!-- 3. Actions -->
-      <button id="btnGenerate" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white text-sm font-medium rounded-xl shadow-lg shadow-indigo-600/20 transition flex items-center justify-center gap-2">
-        <span>เริ่มสร้างคลิปวิดีโอ (Generate)</span>
+      <button id="btnGenerate" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white text-xs font-semibold rounded-xl shadow-lg shadow-indigo-600/20 transition flex items-center justify-center gap-2">
+        <span>เริ่มประมวลผล (Generate)</span>
       </button>
 
-      <!-- Progress / Status Display -->
+      <!-- Progress Box -->
       <div id="progressBox" class="hidden p-4 rounded-xl bg-indigo-950/40 border border-indigo-800/40 text-center">
-        <div class="inline-block animate-spin rounded-full h-5 w-5 border-2 border-indigo-400 border-t-transparent mb-2"></div>
-        <p id="progressMessage" class="text-xs text-indigo-200">กำลังส่งข้อมูลไปยังระบบ...</p>
+        <div class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-indigo-400 border-t-transparent mb-2"></div>
+        <p id="progressMessage" class="text-xs text-indigo-200">กำลังประมวลผลเสียงพากย์...</p>
       </div>
 
       <!-- 4. Result Preview -->
-      <section id="resultSection" class="hidden p-5 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm space-y-4">
-        <h2 class="text-xs font-medium uppercase tracking-wider text-emerald-400">
-          วิดีโอผลลัพธ์พร้อมใช้งาน
-        </h2>
-        <div class="rounded-xl overflow-hidden bg-black aspect-[9/16] max-w-[280px] mx-auto border border-slate-800">
-          <video id="resultVideo" controls class="w-full h-full object-cover"></video>
+      <section id="resultSection" class="hidden p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-emerald-400">ผลลัพธ์สำเร็จ</h2>
+        
+        <!-- Audio Result -->
+        <div id="audioResultBox" class="hidden">
+          <audio id="resultAudio" controls class="w-full"></audio>
         </div>
-        <a id="btnDownload" download="animation_output.mp4" 
-           class="block w-full py-3 text-center bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium rounded-xl transition">
-          ดาวน์โหลดวิดีโอลง iPad (.mp4)
+
+        <!-- Video Result -->
+        <div id="videoResultBox" class="hidden">
+          <div class="rounded-xl overflow-hidden bg-black aspect-[9/16] max-w-[240px] mx-auto border border-slate-800">
+            <video id="resultVideo" controls class="w-full h-full object-cover"></video>
+          </div>
+        </div>
+
+        <a id="btnDownload" download="output_result" 
+           class="block w-full py-2.5 text-center bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition">
+          ดาวน์โหลดไฟล์ลงเครื่อง
         </a>
       </section>
     </div>
   </div>
 
   <script>
+    let currentMode = 'audio'; // 'audio' หรือ 'video'
+
     const backendUrlInput = document.getElementById('backendUrl');
     const btnCheckStatus = document.getElementById('btnCheckStatus');
     const statusIndicator = document.getElementById('statusIndicator');
+    const modeAudioOnly = document.getElementById('modeAudioOnly');
+    const modeVideo = document.getElementById('modeVideo');
+    const imageInputBox = document.getElementById('imageInputBox');
+    const voiceSelect = document.getElementById('voiceSelect');
+    const scriptText = document.getElementById('scriptText');
+    const imageInput = document.getElementById('imageInput');
     const btnGenerate = document.getElementById('btnGenerate');
     const progressBox = document.getElementById('progressBox');
-    const progressMessage = document.getElementById('progressMessage');
     const resultSection = document.getElementById('resultSection');
+    const audioResultBox = document.getElementById('audioResultBox');
+    const videoResultBox = document.getElementById('videoResultBox');
+    const resultAudio = document.getElementById('resultAudio');
     const resultVideo = document.getElementById('resultVideo');
     const btnDownload = document.getElementById('btnDownload');
 
-    // โหลด URL เดิมที่เคยบันทึกไว้ในเบราว์เซอร์
-    const savedUrl = localStorage.getItem('animator_backend_url');
-    if (savedUrl) backendUrlInput.value = savedUrl;
+    // สลับโหมด
+    modeAudioOnly.addEventListener('click', () => {
+      currentMode = 'audio';
+      modeAudioOnly.className = 'py-2.5 px-3 rounded-lg border border-indigo-600 bg-indigo-600/20 text-indigo-300 text-xs font-medium text-center transition';
+      modeVideo.className = 'py-2.5 px-3 rounded-lg border border-slate-800 bg-slate-950 text-slate-400 text-xs font-medium text-center transition';
+      imageInputBox.classList.add('hidden');
+    });
 
-    btnCheckStatus.addEventListener('click', async () => {
+    modeVideo.addEventListener('click', () => {
+      currentMode = 'video';
+      modeVideo.className = 'py-2.5 px-3 rounded-lg border border-indigo-600 bg-indigo-600/20 text-indigo-300 text-xs font-medium text-center transition';
+      modeAudioOnly.className = 'py-2.5 px-3 rounded-lg border border-slate-800 bg-slate-950 text-slate-400 text-xs font-medium text-center transition';
+      imageInputBox.classList.remove('hidden');
+    });
+
+    // ตรวจสอบสถานะ Backend อัตโนมัติเมื่อเปิดหน้า
+    async function checkHealth() {
       const url = backendUrlInput.value.trim().replace(/\/$/, "");
-      if (!url) return alert('กรุณาระบุ Ngrok URL');
-      localStorage.setItem('animator_backend_url', url);
-
-      statusIndicator.textContent = 'กำลังตรวจสอบสถานะ...';
-      statusIndicator.className = 'text-xs text-amber-400 mt-2';
-
+      if (!url) return;
       try {
         const res = await fetch(`${url}/health`, {
           headers: { "ngrok-skip-browser-warning": "69420" }
         });
         if (res.ok) {
-          statusIndicator.textContent = 'เชื่อมต่อ Backend สำเร็จ พร้อมใช้งาน';
-          statusIndicator.className = 'text-xs text-emerald-400 mt-2';
-        } else {
-          throw new Error();
+          statusIndicator.textContent = '🟢 เชื่อมต่อแล้ว';
+          statusIndicator.className = 'text-xs text-emerald-400';
         }
-      } catch (err) {
-        statusIndicator.textContent = 'ไม่สามารถเชื่อมต่อได้ ตรวจสอบ URL หรือสถานะการรันบน Kaggle/Colab';
-        statusIndicator.className = 'text-xs text-rose-400 mt-2';
+      } catch (e) {
+        statusIndicator.textContent = '🔴 ยังไม่เชื่อมต่อ';
+        statusIndicator.className = 'text-xs text-rose-400';
       }
-    });
+    }
+    btnCheckStatus.addEventListener('click', checkHealth);
+    window.addEventListener('DOMContentLoaded', checkHealth);
 
+    // ส่งคำสั่งประมวลผล
     btnGenerate.addEventListener('click', async () => {
       const url = backendUrlInput.value.trim().replace(/\/$/, "");
-      const imgFile = document.getElementById('imageInput').files[0];
-      const audioFile = document.getElementById('audioInput').files[0];
-      const script = document.getElementById('scriptText').value.trim();
+      const script = scriptText.value.trim();
+      const voice = voiceSelect.value;
 
-      if (!url) return alert('กรุณาระบุและทดสอบ Ngrok URL ก่อน');
-      if (!imgFile) return alert('กรุณาเลือกภาพตัวละคร');
-      if (!audioFile) return alert('กรุณาเลือกไฟล์เสียงต้นแบบ');
-      if (!script) return alert('กรุณาระบุสคริปต์ข้อความ');
+      if (!script) return alert('กรุณาพิมพ์สคริปต์ข้อความ');
+      if (currentMode === 'video' && !imageInput.files[0]) return alert('กรุณาเลือกภาพตัวละคร');
 
       const formData = new FormData();
-      formData.append('image', imgFile);
-      formData.append('audio', audioFile);
       formData.append('text', script);
+      formData.append('voice', voice);
+      formData.append('mode', currentMode);
+      if (currentMode === 'video') {
+        formData.append('image', imageInput.files[0]);
+      }
 
       progressBox.classList.remove('hidden');
       resultSection.classList.add('hidden');
       btnGenerate.disabled = true;
-      btnGenerate.classList.add('opacity-50', 'cursor-not-allowed');
-      progressMessage.textContent = 'กำลังประมวลผล (เจนเสียงและขยับท่าทาง)...';
 
       try {
-        const res = await fetch(`${url}/generate`, {
+        const res = await fetch(`${url}/process`, {
           method: 'POST',
           body: formData,
           headers: { "ngrok-skip-browser-warning": "69420" }
         });
-
-        if (!res.ok) throw new Error('การประมวลผลล้มเหลว');
+        if (!res.ok) throw new Error();
 
         const blob = await res.blob();
-        const videoBlobUrl = URL.createObjectURL(blob);
-        resultVideo.src = videoBlobUrl;
-        btnDownload.href = videoBlobUrl;
+        const fileUrl = URL.createObjectURL(blob);
 
+        if (currentMode === 'audio') {
+          audioResultBox.classList.remove('hidden');
+          videoResultBox.classList.add('hidden');
+          resultAudio.src = fileUrl;
+          btnDownload.href = fileUrl;
+          btnDownload.download = 'voice_speech.mp3';
+        } else {
+          videoResultBox.classList.remove('hidden');
+          audioResultBox.classList.add('hidden');
+          resultVideo.src = fileUrl;
+          btnDownload.href = fileUrl;
+          btnDownload.download = 'character_video.mp4';
+        }
         resultSection.classList.remove('hidden');
-        progressBox.classList.add('hidden');
-      } catch (err) {
-        alert('เกิดข้อผิดพลาดในการประมวลผล กรุณาตรวจสอบสถานะคอนโซลของ Backend');
-        progressBox.classList.add('hidden');
+      } catch (e) {
+        alert('เกิดข้อผิดพลาดในการประมวลผล');
       } finally {
+        progressBox.classList.add('hidden');
         btnGenerate.disabled = false;
-        btnGenerate.classList.remove('opacity-50', 'cursor-not-allowed');
       }
     });
   </script>
