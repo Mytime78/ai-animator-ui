@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AI Studio Pro</title>
+  <title>Thai Voice Studio</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -15,136 +15,151 @@
     
     <!-- Header -->
     <header class="text-center mb-6">
-      <h1 class="text-2xl font-bold tracking-tight text-white">AI Voice & Face Studio</h1>
-      <p class="text-slate-400 text-xs mt-1">ระบบผลิตเสียงพากย์และวิดีโอตัวละครพูดภาษาไทย</p>
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-medium mb-2">
+        <span>🎙️ Thai AI Voice Generator</span>
+      </div>
+      <h1 class="text-2xl font-bold tracking-tight text-white">ระบบผลิตเสียงพากย์ AI</h1>
+      <p class="text-slate-400 text-xs mt-1">สร้างเสียงพูดธรรมชาติ รองรับหลากหลายคาแรกเตอร์</p>
     </header>
 
-    <div class="space-y-5">
-      <!-- 1. Connection (ฝัง URL เริ่มต้นไว้ให้แล้ว) -->
-      <section class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+    <div class="space-y-4">
+      <!-- Connection -->
+      <section class="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
         <div class="flex items-center justify-between mb-2">
-          <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Backend URL</label>
-          <span id="statusIndicator" class="text-xs text-slate-500">รอการตรวจสอบ...</span>
+          <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Backend URL (Ngrok)</label>
+          <span id="statusIndicator" class="text-xs text-slate-500">รอตรวจสอบ...</span>
         </div>
         <div class="flex gap-2">
-          <!-- ใส่ค่า URL ฝังไว้ในโค้ดเลย -->
           <input type="url" id="backendUrl" value="https://folic-savanna-stunt.ngrok-free.dev" 
-                 class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-indigo-500 transition">
-          <button id="btnCheckStatus" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-medium rounded-lg border border-slate-700 transition">
+                 class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500 transition">
+          <button id="btnCheckStatus" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-medium rounded-xl border border-slate-700 transition">
             เชื่อมต่อ
           </button>
         </div>
       </section>
 
-      <!-- 2. Settings & Mode Selection -->
-      <section class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-4">
+      <!-- Input Form -->
+      <section class="p-5 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm space-y-4">
+        <!-- Voice Model Select -->
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-2">เลือกรูปแบบผลลัพธ์</label>
-          <div class="grid grid-cols-2 gap-2">
-            <button type="button" id="modeAudioOnly" class="py-2.5 px-3 rounded-lg border border-indigo-600 bg-indigo-600/20 text-indigo-300 text-xs font-medium text-center transition">
-              🔊 เฉพาะเสียงพากย์ (.wav)
-            </button>
-            <button type="button" id="modeVideo" class="py-2.5 px-3 rounded-lg border border-slate-800 bg-slate-950 text-slate-400 text-xs font-medium text-center transition">
-              🎬 วิดีโอภาพขยับ (.mp4)
-            </button>
-          </div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">เลือกเสียงตัวละคร</label>
+          <select id="voiceSelect" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-indigo-500">
+            <optgroup label="เสียงภาษาไทยหลัก">
+              <option value="th-TH-PremwadeeNeural">เปรมวดี (หญิง - สดใส เป็นธรรมชาติ เป็นมิตร)</option>
+              <option value="th-TH-NiwatNeural">นิวัฒน์ (ชาย - ทางการ สุภาพ ชัดเจน)</option>
+            </optgroup>
+            <optgroup label="โทนคาแรกเตอร์พิเศษ (ดัดแปลงผ่านระบบ)">
+              <option value="custom-young-female">น้องสาว / วัยรุ่นหญิง (ปรับ Pitch สูงขึ้น)</option>
+              <option value="custom-deep-male">ผู้ประกาศชายเสียงเข้ม / สารคดี (ปรับ Pitch ทุ้มต่ำ)</option>
+              <option value="custom-fast-reporter">นักข่าว / สรุปประเด็นด่วน (สปีดเร็ว)</option>
+              <option value="custom-calm-story">เล่านิทาน / ผ่อนคลาย (สปีดช้า เสียงนุ่ม)</option>
+            </optgroup>
+          </select>
         </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1.5">เลือกโทนเสียงสังเคราะห์</label>
-          <select id="voiceSelect" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs focus:outline-none focus:border-indigo-500">
-            <option value="th-TH-PremwadeeNeural">เสียงเปรมวดี (ผู้หญิง - สดใส เป็นธรรมชาติ)</option>
-            <option value="th-TH-NiwatNeural">เสียงนิวัฒน์ (ผู้ชาย - ทางการ)</option>
-          </select>
+        <!-- Speed & Pitch Sliders -->
+        <div class="grid grid-cols-2 gap-3 pt-1">
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 mb-1">
+              <span>ความเร็ว</span>
+              <span id="rateVal">ปกติ (0%)</span>
+            </div>
+            <input type="range" id="rateSlider" min="-30" max="40" value="0" step="5" class="w-full accent-indigo-500 cursor-pointer">
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 mb-1">
+              <span>ระดับคีย์เสียง (Pitch)</span>
+              <span id="pitchVal">ปกติ (0Hz)</span>
+            </div>
+            <input type="range" id="pitchSlider" min="-20" max="25" value="0" step="5" class="w-full accent-indigo-500 cursor-pointer">
+          </div>
         </div>
 
         <!-- Script Text -->
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1.5">ข้อความสคริปต์ภาษาไทย</label>
-          <textarea id="scriptText" rows="3" placeholder="พิมพ์ข้อความที่ต้องการให้ตัวละครพูด..." 
-                    class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-xs focus:outline-none focus:border-indigo-500 resize-none"></textarea>
-        </div>
-
-        <!-- Character Image (ซ่อนอัตโนมัติถ้าเลือกโหมดเฉพาะเสียง) -->
-        <div id="imageInputBox" class="hidden">
-          <label class="block text-xs font-semibold text-slate-300 mb-1.5">ภาพตัวละครหน้าตรง</label>
-          <input type="file" id="imageInput" accept="image/*" 
-                 class="block w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-slate-800 file:text-slate-200 file:cursor-pointer border border-slate-800 rounded-lg p-1 bg-slate-950">
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">สคริปต์ข้อความที่ต้องการให้อ่าน</label>
+          <textarea id="scriptText" rows="4" placeholder="พิมพ์ข้อความภาษาไทยที่ต้องการสร้างเสียงพากย์..." 
+                    class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs leading-relaxed focus:outline-none focus:border-indigo-500 resize-none"></textarea>
         </div>
       </section>
 
-      <!-- 3. Actions -->
+      <!-- Generate Button -->
       <button id="btnGenerate" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white text-xs font-semibold rounded-xl shadow-lg shadow-indigo-600/20 transition flex items-center justify-center gap-2">
-        <span>เริ่มประมวลผล (Generate)</span>
+        <span>🔊 สร้างเสียงพากย์ทันที</span>
       </button>
 
-      <!-- Progress Box -->
+      <!-- Progress -->
       <div id="progressBox" class="hidden p-4 rounded-xl bg-indigo-950/40 border border-indigo-800/40 text-center">
-        <div class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-indigo-400 border-t-transparent mb-2"></div>
-        <p id="progressMessage" class="text-xs text-indigo-200">กำลังประมวลผลเสียงพากย์...</p>
+        <div class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-indigo-400 border-t-transparent mb-1.5"></div>
+        <p class="text-xs text-indigo-200">กำลังประมวลผลเสียงสังเคราะห์...</p>
       </div>
 
-      <!-- 4. Result Preview -->
-      <section id="resultSection" class="hidden p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
-        <h2 class="text-xs font-semibold uppercase tracking-wider text-emerald-400">ผลลัพธ์สำเร็จ</h2>
+      <!-- Result Card -->
+      <section id="resultSection" class="hidden p-5 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-semibold uppercase tracking-wider text-emerald-400">เสียงพากย์พร้อมใช้งาน</h2>
+          <span class="text-[10px] text-slate-500">MP3 Quality</span>
+        </div>
         
-        <!-- Audio Result -->
-        <div id="audioResultBox" class="hidden">
-          <audio id="resultAudio" controls class="w-full"></audio>
-        </div>
+        <audio id="resultAudio" controls class="w-full pt-1"></audio>
 
-        <!-- Video Result -->
-        <div id="videoResultBox" class="hidden">
-          <div class="rounded-xl overflow-hidden bg-black aspect-[9/16] max-w-[240px] mx-auto border border-slate-800">
-            <video id="resultVideo" controls class="w-full h-full object-cover"></video>
-          </div>
-        </div>
-
-        <a id="btnDownload" download="output_result" 
-           class="block w-full py-2.5 text-center bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition">
-          ดาวน์โหลดไฟล์ลงเครื่อง
+        <a id="btnDownload" download="thai_voice.mp3" 
+           class="block w-full py-2.5 text-center bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition">
+          ดาวน์โหลดไฟล์เสียง (.mp3) ลง iPad
         </a>
       </section>
     </div>
   </div>
 
   <script>
-    let currentMode = 'audio'; // 'audio' หรือ 'video'
-
     const backendUrlInput = document.getElementById('backendUrl');
     const btnCheckStatus = document.getElementById('btnCheckStatus');
     const statusIndicator = document.getElementById('statusIndicator');
-    const modeAudioOnly = document.getElementById('modeAudioOnly');
-    const modeVideo = document.getElementById('modeVideo');
-    const imageInputBox = document.getElementById('imageInputBox');
     const voiceSelect = document.getElementById('voiceSelect');
+    const rateSlider = document.getElementById('rateSlider');
+    const pitchSlider = document.getElementById('pitchSlider');
+    const rateVal = document.getElementById('rateVal');
+    const pitchVal = document.getElementById('pitchVal');
     const scriptText = document.getElementById('scriptText');
-    const imageInput = document.getElementById('imageInput');
     const btnGenerate = document.getElementById('btnGenerate');
     const progressBox = document.getElementById('progressBox');
     const resultSection = document.getElementById('resultSection');
-    const audioResultBox = document.getElementById('audioResultBox');
-    const videoResultBox = document.getElementById('videoResultBox');
     const resultAudio = document.getElementById('resultAudio');
-    const resultVideo = document.getElementById('resultVideo');
     const btnDownload = document.getElementById('btnDownload');
 
-    // สลับโหมด
-    modeAudioOnly.addEventListener('click', () => {
-      currentMode = 'audio';
-      modeAudioOnly.className = 'py-2.5 px-3 rounded-lg border border-indigo-600 bg-indigo-600/20 text-indigo-300 text-xs font-medium text-center transition';
-      modeVideo.className = 'py-2.5 px-3 rounded-lg border border-slate-800 bg-slate-950 text-slate-400 text-xs font-medium text-center transition';
-      imageInputBox.classList.add('hidden');
+    // จัดการ Slider
+    rateSlider.addEventListener('input', (e) => {
+      const v = e.target.value;
+      rateVal.textContent = v > 0 ? `+${v}%` : `${v}%`;
+    });
+    pitchSlider.addEventListener('input', (e) => {
+      const v = e.target.value;
+      pitchVal.textContent = v > 0 ? `+${v}Hz` : `${v}Hz`;
     });
 
-    modeVideo.addEventListener('click', () => {
-      currentMode = 'video';
-      modeVideo.className = 'py-2.5 px-3 rounded-lg border border-indigo-600 bg-indigo-600/20 text-indigo-300 text-xs font-medium text-center transition';
-      modeAudioOnly.className = 'py-2.5 px-3 rounded-lg border border-slate-800 bg-slate-950 text-slate-400 text-xs font-medium text-center transition';
-      imageInputBox.classList.remove('hidden');
+    // ปรับตั้งค่า Slider อัตโนมัติเมื่อเลือกโทนพิเศษ
+    voiceSelect.addEventListener('change', (e) => {
+      const choice = e.target.value;
+      if (choice === 'custom-young-female') {
+        rateSlider.value = 10;
+        pitchSlider.value = 15;
+      } else if (choice === 'custom-deep-male') {
+        rateSlider.value = -5;
+        pitchSlider.value = -15;
+      } else if (choice === 'custom-fast-reporter') {
+        rateSlider.value = 25;
+        pitchSlider.value = 0;
+      } else if (choice === 'custom-calm-story') {
+        rateSlider.value = -15;
+        pitchSlider.value = -5;
+      } else {
+        rateSlider.value = 0;
+        pitchSlider.value = 0;
+      }
+      rateSlider.dispatchEvent(new Event('input'));
+      pitchSlider.dispatchEvent(new Event('input'));
     });
 
-    // ตรวจสอบสถานะ Backend อัตโนมัติเมื่อเปิดหน้า
     async function checkHealth() {
       const url = backendUrlInput.value.trim().replace(/\/$/, "");
       if (!url) return;
@@ -153,7 +168,7 @@
           headers: { "ngrok-skip-browser-warning": "69420" }
         });
         if (res.ok) {
-          statusIndicator.textContent = '🟢 เชื่อมต่อแล้ว';
+          statusIndicator.textContent = '🟢 พร้อมใช้งาน';
           statusIndicator.className = 'text-xs text-emerald-400';
         }
       } catch (e) {
@@ -164,29 +179,35 @@
     btnCheckStatus.addEventListener('click', checkHealth);
     window.addEventListener('DOMContentLoaded', checkHealth);
 
-    // ส่งคำสั่งประมวลผล
     btnGenerate.addEventListener('click', async () => {
       const url = backendUrlInput.value.trim().replace(/\/$/, "");
       const script = scriptText.value.trim();
-      const voice = voiceSelect.value;
+      let voice = voiceSelect.value;
 
-      if (!script) return alert('กรุณาพิมพ์สคริปต์ข้อความ');
-      if (currentMode === 'video' && !imageInput.files[0]) return alert('กรุณาเลือกภาพตัวละคร');
+      if (!script) return alert('กรุณาระบุข้อความสคริปต์');
+
+      // แมปค่าเสียงสำหรับ Preset พิเศษ
+      if (voice.includes('female') || voice.includes('story') || voice.includes('reporter')) {
+        voice = 'th-TH-PremwadeeNeural';
+      } else if (voice.includes('male')) {
+        voice = 'th-TH-NiwatNeural';
+      }
+
+      const rate = `${rateSlider.value >= 0 ? '+' : ''}${rateSlider.value}%`;
+      const pitch = `${pitchSlider.value >= 0 ? '+' : ''}${pitchSlider.value}Hz`;
 
       const formData = new FormData();
       formData.append('text', script);
       formData.append('voice', voice);
-      formData.append('mode', currentMode);
-      if (currentMode === 'video') {
-        formData.append('image', imageInput.files[0]);
-      }
+      formData.append('rate', rate);
+      formData.append('pitch', pitch);
 
       progressBox.classList.remove('hidden');
       resultSection.classList.add('hidden');
       btnGenerate.disabled = true;
 
       try {
-        const res = await fetch(`${url}/process`, {
+        const res = await fetch(`${url}/tts`, {
           method: 'POST',
           body: formData,
           headers: { "ngrok-skip-browser-warning": "69420" }
@@ -194,24 +215,13 @@
         if (!res.ok) throw new Error();
 
         const blob = await res.blob();
-        const fileUrl = URL.createObjectURL(blob);
+        const audioBlobUrl = URL.createObjectURL(blob);
+        resultAudio.src = audioBlobUrl;
+        btnDownload.href = audioBlobUrl;
 
-        if (currentMode === 'audio') {
-          audioResultBox.classList.remove('hidden');
-          videoResultBox.classList.add('hidden');
-          resultAudio.src = fileUrl;
-          btnDownload.href = fileUrl;
-          btnDownload.download = 'voice_speech.mp3';
-        } else {
-          videoResultBox.classList.remove('hidden');
-          audioResultBox.classList.add('hidden');
-          resultVideo.src = fileUrl;
-          btnDownload.href = fileUrl;
-          btnDownload.download = 'character_video.mp4';
-        }
         resultSection.classList.remove('hidden');
       } catch (e) {
-        alert('เกิดข้อผิดพลาดในการประมวลผล');
+        alert('เกิดข้อผิดพลาดในการสร้างไฟล์เสียง กรุณาตรวจสอบสถานะ Backend');
       } finally {
         progressBox.classList.add('hidden');
         btnGenerate.disabled = false;
